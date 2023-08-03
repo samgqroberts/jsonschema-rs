@@ -452,9 +452,7 @@ mod tests {
                                     let as_f64 = instance
                                         .parse::<f64>()
                                         .expect("format validated by regex checker");
-                                    println!("1 {:#?} {:#?}", as_f64, limit.as_f64().unwrap());
                                     valid = !NumCmp::num_lt(as_f64, limit.as_f64().unwrap());
-                                    println!("valid {:#?}", valid);
                                 }
                             }
                         }
@@ -506,9 +504,7 @@ mod tests {
                                     let as_f64 = instance
                                         .parse::<f64>()
                                         .expect("format validated by regex checker");
-                                    println!("1 {:#?} {:#?}", as_f64, limit.as_f64().unwrap());
                                     valid = !NumCmp::num_lt(as_f64, limit.as_f64().unwrap());
-                                    println!("valid {:#?}", valid);
                                 }
                             }
                         }

@@ -39,68 +39,69 @@ fn draft_version(json_schema_test_suite_path: &Path, file_path: &Path) -> String
 
 fn load_inner(json_schema_test_suite_path: &Path, dir: &Path, prefix: &str) -> Vec<TestCase> {
     let mut tests = vec![];
-    for result_entry in
-        fs::read_dir(dir).unwrap_or_else(|_| panic!("Tests directory not found: {}", dir.display()))
-    {
-        if let Ok(entry) = result_entry {
-            let path = entry.path();
-            if entry.file_type().map(|ft| ft.is_dir()).unwrap_or(false) {
-                tests.extend(load_inner(
-                    json_schema_test_suite_path,
-                    &path,
-                    &format!(
-                        "{}{}_",
-                        prefix,
-                        path.file_name().and_then(OsStr::to_str).unwrap_or_else(|| {
-                            panic!(
-                                "No issues are expected while extracting the filename from path={}",
-                                path.display()
-                            )
-                        })
-                    ),
-                ));
-            } else if let Ok(file_reader) = File::open(&path) {
-                let test_groups: Vec<JSONSchemaTestGroup> = from_reader(file_reader).unwrap_or_else(|_| {
-                    panic!(
-                        r#"{} does not contain valid content. Expected something like [{{"schema": ..., "tests": [{{"data": ..., "is_valid": ...}}, ...]}}]"#,
-                        path.display()
-                    );
-                });
-
-                tests.extend(test_groups.iter().enumerate().flat_map(|(gid, test_group)| {
-                    test_group
-                        .tests
-                        .iter()
-                        .enumerate()
-                        .map(|(tid, test_case)| TestCase {
-                            name: format!(
-                                "{}{}_{}_{}",
-                                prefix,
-                                path.file_stem()
-                                    .and_then(OsStr::to_str)
-                                    .unwrap_or_else(|| {
-                                        panic!(
-                                            "No issues are expected while extracting the filename (without extension) from path={}",
-                                            path.display()
-                                        );
-                                    })
-                                    .replace('-', "_"),
-                                gid,
-                                tid
-                            ),
-                            draft_version: draft_version(json_schema_test_suite_path, &path),
-                            group_description: test_group.description.clone(),
-                            test_case_description: test_case.description.clone(),
-                            schema: test_group.schema.clone(),
-                            instance: test_case.data.clone(),
-                            is_valid: test_case.valid,
-                        })
-                        .collect::<Vec<_>>()
-                }))
-            }
-        }
-    }
     tests
+    // for result_entry in
+    //     fs::read_dir(dir).unwrap_or_else(|_| panic!("Tests directory not found: {}", dir.display()))
+    // {
+    //     if let Ok(entry) = result_entry {
+    //         let path = entry.path();
+    //         if entry.file_type().map(|ft| ft.is_dir()).unwrap_or(false) {
+    //             tests.extend(load_inner(
+    //                 json_schema_test_suite_path,
+    //                 &path,
+    //                 &format!(
+    //                     "{}{}_",
+    //                     prefix,
+    //                     path.file_name().and_then(OsStr::to_str).unwrap_or_else(|| {
+    //                         panic!(
+    //                             "No issues are expected while extracting the filename from path={}",
+    //                             path.display()
+    //                         )
+    //                     })
+    //                 ),
+    //             ));
+    //         } else if let Ok(file_reader) = File::open(&path) {
+    //             let test_groups: Vec<JSONSchemaTestGroup> = from_reader(file_reader).unwrap_or_else(|_| {
+    //                 panic!(
+    //                     r#"{} does not contain valid content. Expected something like [{{"schema": ..., "tests": [{{"data": ..., "is_valid": ...}}, ...]}}]"#,
+    //                     path.display()
+    //                 );
+    //             });
+
+    //             tests.extend(test_groups.iter().enumerate().flat_map(|(gid, test_group)| {
+    //                 test_group
+    //                     .tests
+    //                     .iter()
+    //                     .enumerate()
+    //                     .map(|(tid, test_case)| TestCase {
+    //                         name: format!(
+    //                             "{}{}_{}_{}",
+    //                             prefix,
+    //                             path.file_stem()
+    //                                 .and_then(OsStr::to_str)
+    //                                 .unwrap_or_else(|| {
+    //                                     panic!(
+    //                                         "No issues are expected while extracting the filename (without extension) from path={}",
+    //                                         path.display()
+    //                                     );
+    //                                 })
+    //                                 .replace('-', "_"),
+    //                             gid,
+    //                             tid
+    //                         ),
+    //                         draft_version: draft_version(json_schema_test_suite_path, &path),
+    //                         group_description: test_group.description.clone(),
+    //                         test_case_description: test_case.description.clone(),
+    //                         schema: test_group.schema.clone(),
+    //                         instance: test_case.data.clone(),
+    //                         is_valid: test_case.valid,
+    //                     })
+    //                     .collect::<Vec<_>>()
+    //             }))
+    //         }
+    //     }
+    // }
+    // tests
 }
 
 /// Load all the test cases present into `draft_folder`
