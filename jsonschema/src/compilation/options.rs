@@ -620,7 +620,11 @@ impl CompilationOptions {
     ///     .expect("A valid schema")
     ///     .is_valid(&json!({ "a": "b"})));
     /// ```
-    pub fn with_custom_keyword<T>(mut self, keyword: T, definition: CustomKeywordDefinition) -> Self
+    pub fn with_custom_keyword<T>(
+        &mut self,
+        keyword: T,
+        definition: CustomKeywordDefinition,
+    ) -> &mut Self
     where
         T: Into<String>,
     {
